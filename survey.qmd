@@ -1,0 +1,98 @@
+---
+server: shiny
+filters: [surveydown]
+---
+
+```{r}
+#| context: setup
+#| echo: false
+#| warning: false
+#| message: false
+
+# Run this in your Console to install the latest version of the R package:
+# remotes::install_github("jhelvy/surveydown", force = TRUE)
+
+# Run this to install or update the Quarto extension to the latest version:
+# surveydown::sd_update_extension()
+
+# Load the package
+library(surveydown)
+library(tidyverse)
+
+# Run initial setup function (essential - do not delete)
+sd_setup()
+```
+
+::: {#welcome .sd-page}
+
+# Welcome to our survey!
+
+Here is a basic "multiple choice" question, created using `type = 'mc'` inside the `sd_question()` function:
+
+```{r}
+sd_question(
+  type  = 'mc',
+  id    = 'penguins',
+  label = "Which type of penguin do you like the best?",
+  option = c(
+    'Adélie'    = 'adelie',
+    'Chinstrap' = 'chinstrap',
+    'Gentoo'    = 'gentoo'
+  )
+)
+```
+
+<br>
+
+```{r}
+sd_next(next_page = 'results')
+```
+
+:::
+
+::: {#results .sd-page}
+
+You chose: **`r sd_display_value('penguins')`**
+
+Summary of what everyone else has chosen:
+
+```{r}
+plotOutput('penguin_plot')
+```
+
+:::
+
+```{r}
+#| context: server
+
+db <- sd_database(
+  user   = 'postgres.axzkymswaxcdkbushwxb',
+  host   = 'aws-0-us-east-1.pooler.supabase.com',
+  port   = 6543,
+  db_name = 'postgres',
+  table_name = 'wordcloud'
+)
+
+config <- sd_config()
+
+data <- sd_get_data(db, reactive = TRUE, refresh_interval = 5) # Every 5 sec
+
+# Render the plot
+output$penguin_plot <- renderPlot({  
+  data() %>%   
+    count(penguins) %>% 
+    mutate(penguins = ifelse(penguins == '', 'No response', penguins)) %>% 
+    ggplot() +
+    geom_col(aes(x = n, y = reorder(penguins, n)), width = 0.7) +
+    theme_minimal() +
+    labs(x = "Count", y = "Penguin Type", title = "Penguin Count")
+})
+
+sd_server(
+  input   = input,
+  output  = output,
+  session = session,
+  config  = config,
+  db      = db
+)
+```
