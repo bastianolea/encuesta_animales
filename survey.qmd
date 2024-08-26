@@ -10,7 +10,7 @@ filters: [surveydown]
 #| message: false
 
 # Run this in your Console to install the latest version of the R package:
-# remotes::install_github("jhelvy/surveydown", force = TRUE)
+# remotes::install_github("surveydown-dev/surveydown", force = TRUE)
 
 # Run this to install or update the Quarto extension to the latest version:
 # surveydown::sd_update_extension()
@@ -65,28 +65,57 @@ plotOutput('penguin_plot')
 ```{r}
 #| context: server
 
+##################
+# database setup #
+##################
+
+# surveydown stores data on a database that you define at https://supabase.com/
+# To connect to a database to store the survey data, update this with details
+# from your supabase account and database. You can also set pause = TRUE
+# which will ignore the other settings and won't attempt to connect to the
+# database. See documentation for details at https://surveydown.org/store-data
+
 db <- sd_database(
   user   = 'postgres.axzkymswaxcdkbushwxb',
   host   = 'aws-0-us-east-1.pooler.supabase.com',
   port   = 6543,
-  db_name = 'postgres',
-  table_name = 'wordcloud'
+  dbname = 'postgres',
+  table  = 'wordcloud'
 )
 
+################
+# config setup #
+################
+
+# Use the sd_config() function to customize features in your survey, like
+# logic to conditionally display questions or skip to pages based on responses
+# to skip other questions in your survey. See documentation for details at
+# https://surveydown.org/config
+
 config <- sd_config()
+
+###################################
+# Get reactive data and make plot #
+###################################
 
 data <- sd_get_data(db, reactive = TRUE, refresh_interval = 5) # Every 5 sec
 
 # Render the plot
-output$penguin_plot <- renderPlot({  
-  data() %>%   
-    count(penguins) %>% 
-    mutate(penguins = ifelse(penguins == '', 'No response', penguins)) %>% 
+output$penguin_plot <- renderPlot({
+  data() %>%
+    count(penguins) %>%
+    mutate(penguins = ifelse(penguins == '', 'No response', penguins)) %>%
     ggplot() +
     geom_col(aes(x = n, y = reorder(penguins, n)), width = 0.7) +
     theme_minimal() +
     labs(x = "Count", y = "Penguin Type", title = "Penguin Count")
 })
+
+####################################
+# Don't change anything below here #
+####################################
+
+# The sd_server function initiates your survey - don't change this
 
 sd_server(
   input   = input,
