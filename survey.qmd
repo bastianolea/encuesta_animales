@@ -17,7 +17,8 @@ filters: [surveydown]
 
 # Load the package
 library(surveydown)
-library(tidyverse)
+library(dplyr)
+library(ggplot2)
 
 # Run initial setup function (essential - do not delete)
 sd_setup()
@@ -27,7 +28,7 @@ sd_setup()
 
 # Welcome to our survey!
 
-Here is a basic "multiple choice" question, created using `type = 'mc'` inside the `sd_question()` function:
+Here is a basic "multiple choice" question. The results will be displayed on the next page, showing both the choice you made as well as a summary of all the choices made by other participants.
 
 ```{r}
 sd_question(
@@ -102,9 +103,9 @@ data <- sd_get_data(db, reactive = TRUE, refresh_interval = 5) # Every 5 sec
 
 # Render the plot
 output$penguin_plot <- renderPlot({
-  data() %>%
-    count(penguins) %>%
-    mutate(penguins = ifelse(penguins == '', 'No response', penguins)) %>%
+  data() |> # Note the () here, as this is a reactive function
+    count(penguins) |>
+    mutate(penguins = ifelse(penguins == '', 'No response', penguins)) |>
     ggplot() +
     geom_col(aes(x = n, y = reorder(penguins, n)), width = 0.7) +
     theme_minimal() +

@@ -102,7 +102,7 @@ Shiny.addCustomMessageHandler('shinyjs-refresh', function(params) { shinyjs.debu
 <div id="welcome" class="sd-page">
 <section id="welcome-to-our-survey" class="level1">
 <h1>Welcome to our survey!</h1>
-<p>Here is a basic “multiple choice” question, created using <code>type = 'mc'</code> inside the <code>sd_question()</code> function:</p>
+<p>Here is a basic “multiple choice” question. The results will be displayed on the next page, showing both the choice you made as well as a summary of all the choices made by other participants.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="container- penguins" data-question-id="penguins" class="question-container">
@@ -153,42 +153,72 @@ Shiny.addCustomMessageHandler('shinyjs-refresh', function(params) { shinyjs.debu
 <p>
 <script type="application/shiny-prerendered" data-context="server-start">
 # Run this in your Console to install the latest version of the R package:
-# remotes::install_github("jhelvy/surveydown", force = TRUE)
+# remotes::install_github("surveydown-dev/surveydown", force = TRUE)
 
 # Run this to install or update the Quarto extension to the latest version:
 # surveydown::sd_update_extension()
 
 # Load the package
 library(surveydown)
-library(tidyverse)
+library(dplyr)
+library(ggplot2)
 
 # Run initial setup function (essential - do not delete)
 sd_setup()
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
+##################
+# database setup #
+##################
+
+# surveydown stores data on a database that you define at https://supabase.com/
+# To connect to a database to store the survey data, update this with details
+# from your supabase account and database. You can also set pause = TRUE
+# which will ignore the other settings and won't attempt to connect to the
+# database. See documentation for details at https://surveydown.org/store-data
+
 db <- sd_database(
   user   = 'postgres.axzkymswaxcdkbushwxb',
   host   = 'aws-0-us-east-1.pooler.supabase.com',
   port   = 6543,
-  db_name = 'postgres',
-  table_name = 'wordcloud'
+  dbname = 'postgres',
+  table  = 'wordcloud'
 )
 
+################
+# config setup #
+################
+
+# Use the sd_config() function to customize features in your survey, like
+# logic to conditionally display questions or skip to pages based on responses
+# to skip other questions in your survey. See documentation for details at
+# https://surveydown.org/config
+
 config <- sd_config()
+
+###################################
+# Get reactive data and make plot #
+###################################
 
 data <- sd_get_data(db, reactive = TRUE, refresh_interval = 5) # Every 5 sec
 
 # Render the plot
-output$penguin_plot <- renderPlot({  
-  data() %>%   
-    count(penguins) %>% 
-    mutate(penguins = ifelse(penguins == '', 'No response', penguins)) %>% 
+output$penguin_plot <- renderPlot({
+  data() |> # Note the () here, as this is a reactive function
+    count(penguins) |>
+    mutate(penguins = ifelse(penguins == '', 'No response', penguins)) |>
     ggplot() +
     geom_col(aes(x = n, y = reorder(penguins, n)), width = 0.7) +
     theme_minimal() +
     labs(x = "Count", y = "Penguin Type", title = "Penguin Count")
 })
+
+####################################
+# Don't change anything below here #
+####################################
+
+# The sd_server function initiates your survey - don't change this
 
 sd_server(
   input   = input,
@@ -233,7 +263,7 @@ ojs_define <- function(..., .session = shiny::getDefaultReactiveDomain()) {
 <!--/html_preserve-->
 <!--html_preserve-->
 <script type="application/shiny-prerendered" data-context="execution_dependencies">
-{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages","version"]},"class":{"type":"character","attributes":{},"value":["data.frame"]},"row.names":{"type":"integer","attributes":{},"value":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68]}},"value":[{"type":"character","attributes":{},"value":["base","bslib","cachem","cli","colorspace","commonmark","compiler","datasets","digest","dplyr","evaluate","fansi","fastmap","forcats","generics","ggplot2","glue","graphics","grDevices","grid","gtable","hms","htmltools","htmlwidgets","httpuv","jquerylib","jsonlite","knitr","later","lifecycle","lubridate","magrittr","markdown","methods","mime","munsell","pillar","pkgconfig","promises","purrr","R6","Rcpp","readr","rlang","rmarkdown","rstudioapi","sass","scales","shiny","shinyjs","stats","stringi","stringr","surveydown","tibble","tidyr","tidyselect","tidyverse","timechange","tools","tzdb","utf8","utils","vctrs","withr","xfun","xtable","yaml"]},{"type":"character","attributes":{},"value":["4.4.1","0.8.0","1.1.0","3.6.3","2.1-1","1.9.1","4.4.1","4.4.1","0.6.37","1.1.4","0.24.0","1.0.6","1.2.0","1.0.0","0.1.3","3.5.1","1.7.0","4.4.1","4.4.1","4.4.1","0.3.5","1.1.3","0.5.8.1","1.6.4","1.6.15","0.1.4","1.8.8","1.48","1.3.2","1.0.4","1.9.3","2.0.3","1.13","4.4.1","0.12","0.5.1","1.9.0","2.0.3","1.3.0","1.0.2","2.5.1","1.0.13","2.1.5","1.1.4","2.28","0.16.0","0.4.9","1.3.0","1.9.1","2.1.0","4.4.1","1.8.4","1.5.1","0.1.1","3.2.1","1.3.1","1.2.1","2.0.0","0.3.0","4.4.1","0.4.0","1.2.4","4.4.1","0.6.5","3.0.1","0.47","1.8-4","2.3.10"]}]}]}
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages","version"]},"class":{"type":"character","attributes":{},"value":["data.frame"]},"row.names":{"type":"integer","attributes":{},"value":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56]}},"value":[{"type":"character","attributes":{},"value":["base","bslib","cachem","cli","colorspace","commonmark","compiler","datasets","digest","dplyr","evaluate","fansi","fastmap","generics","ggplot2","glue","graphics","grDevices","grid","gtable","htmltools","htmlwidgets","httpuv","jquerylib","jsonlite","knitr","later","lifecycle","magrittr","markdown","methods","mime","munsell","pillar","pkgconfig","promises","R6","Rcpp","rlang","rmarkdown","sass","scales","shiny","shinyjs","stats","surveydown","tibble","tidyselect","tools","utf8","utils","vctrs","withr","xfun","xtable","yaml"]},{"type":"character","attributes":{},"value":["4.4.1","0.8.0","1.1.0","3.6.3","2.1-1","1.9.1","4.4.1","4.4.1","0.6.37","1.1.4","0.24.0","1.0.6","1.2.0","0.1.3","3.5.1","1.7.0","4.4.1","4.4.1","4.4.1","0.3.5","0.5.8.1","1.6.4","1.6.15","0.1.4","1.8.8","1.48","1.3.2","1.0.4","2.0.3","1.13","4.4.1","0.12","0.5.1","1.9.0","2.0.3","1.3.0","2.5.1","1.0.13","1.1.4","2.28","0.4.9","1.3.0","1.9.1","2.1.0","4.4.1","0.2.0","3.2.1","1.2.1","4.4.1","1.2.4","4.4.1","0.6.5","3.0.1","0.47","1.8-4","2.3.10"]}]}]}
 </script>
 <!--/html_preserve-->
 
