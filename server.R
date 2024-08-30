@@ -10,12 +10,12 @@
 # database. See documentation for details at https://surveydown.org/store-data
 
 db <- sd_database(
-  host   = "aws-0-us-east-1.pooler.supabase.com",
-  dbname = "postgres",
-  port   = "6543",
-  user   = "postgres.hwumdvjnymbrgeemvrhq",
-  table  = "wordcloud",
-  gssencmode = "disable"
+  host   = "",
+  dbname = "",
+  port   = "",
+  user   = "",
+  table  = "",
+  pause  = TRUE
 )
 
 ################
