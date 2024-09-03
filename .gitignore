@@ -7,7 +7,6 @@
 .Ruserdata
 build.R
 data.csv
-deploy.R
 doc
 docs
 foo.R
