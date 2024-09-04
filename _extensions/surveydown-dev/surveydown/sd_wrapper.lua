@@ -1,5 +1,5 @@
--- Function to log messages
-local function log(message)
+-- Function to log error messages
+local function log_error(message)
     io.stderr:write(message .. "\n")
 end
 
@@ -13,24 +13,29 @@ end
 
 -- Get the path to the main Lua filter in the surveydown package
 local function get_main_filter_path()
-    local cmd = 'Rscript -e "cat(system.file(\'quarto/filters\', \'main.lua\', package = \'surveydown\'))"'
-    local result = run_r_command(cmd)
+    local cmd = 'Rscript -e "cat(file.path(find.package(\'surveydown\'), \'quarto\', \'filters\', \'sd_main.lua\'))"'
+    return run_r_command(cmd)
+end
 
-    if result == "" then
-        error("Unable to find main.lua in the surveydown package. Please check your installation.")
+-- Function to load file
+local function load_file(path)
+    local f, err = loadfile(path)
+    if f then
+        return f
+    else
+        return nil, err
     end
-
-    return result
 end
 
 -- Get the main filter path
 local main_filter_path = get_main_filter_path()
 
 -- Load the main filter
-local main_filter, load_error = loadfile(main_filter_path)
+local main_filter, load_error = load_file(main_filter_path)
 
 if load_error then
-    error("Failed to load main filter: " .. load_error)
+    log_error("Error loading main filter: " .. load_error)
+    error(load_error)
 else
     main_filter = main_filter()  -- Execute the loaded chunk
 end
@@ -40,7 +45,7 @@ function Pandoc(doc)
     if main_filter and type(main_filter.Pandoc) == "function" then
         return main_filter.Pandoc(doc)
     else
-        log("Warning: Main filter's Pandoc function not found or not a function")
+        log_error("Warning: Main filter's Pandoc function not found or not a function")
         return doc
     end
 end
