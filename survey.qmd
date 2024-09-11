@@ -57,9 +57,11 @@ db <- sd_database(
 
 # Demo survey of reactive plot
 
-> This is a demo survey showcasing the functionality of <a href="https://surveydown.org" target="_blank">surveydown</a>. It doesn't collect any data.
->
-> The GitHub repo of this demo can be accessed <a href="https://github.com/surveydown-dev/demo-reactive-plot" target="_blank">here</a>.
+::: {.callout-note}
+This is a demo survey showcasing the functionality of <a href="https://surveydown.org" target="_blank">surveydown</a>. It doesn't collect any data.
+
+The GitHub repo of this demo can be accessed <a href="https://github.com/surveydown-dev/demo-reactive-plot" target="_blank">here</a>.
+:::
 
 Here is a basic "multiple choice" question. The results will be displayed on the next page, showing both the choice you made as well as a summary of all the choices made by other participants.
 
@@ -74,11 +76,7 @@ sd_question(
     'Gentoo'    = 'gentoo'
   )
 )
-```
 
-<br>
-
-```{r}
 sd_next(next_page = 'results')
 ```
 
@@ -86,7 +84,7 @@ sd_next(next_page = 'results')
 
 ::: {#results .sd-page}
 
-You chose: **`r sd_display_value('penguins')`**
+You chose: **`r sd_output("penguins", type = "value")`**
 
 Summary of what everyone else has chosen:
 
