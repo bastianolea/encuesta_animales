@@ -112,7 +112,7 @@ config <- sd_config()
 # Get reactive data and make plot #
 ###################################
 
-data <- sd_get_data(db, reactive = TRUE, refresh_interval = 5) # Every 5 sec
+data <- sd_get_data(db, refresh_interval = 5) # Every 5 sec (default)
 
 # Render the plot
 output$penguin_plot <- renderPlot({
