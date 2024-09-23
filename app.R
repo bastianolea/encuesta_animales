@@ -25,14 +25,12 @@ db <- sd_database(
 # Server setup
 server <- function(input, output, session) {
 
-    # Config setup
-    config <- sd_config()
-
-    data <- sd_get_data(db, refresh_interval = 5) # Every 5 sec (default)
+    # Get data in 5 sec interval
+    data <- sd_get_data(db)
 
     # Render the plot
     output$penguin_plot <- renderPlot({
-        data() |> # Note the () here, as this is a reactive function
+        data() |> # Note the () here, as this is a reactive expression
             count(penguins) |>
             mutate(penguins = ifelse(penguins == '', 'No response', penguins)) |>
             ggplot() +
@@ -41,13 +39,9 @@ server <- function(input, output, session) {
             labs(x = "Count", y = "Penguin Type", title = "Penguin Count")
     })
 
-    # sd_server() initiates your survey - don't change it
+    # Database designation and other settings
     sd_server(
-        input   = input,
-        output  = output,
-        session = session,
-        config  = config,
-        db      = db
+        db = db
     )
 
 }
