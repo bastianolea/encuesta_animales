@@ -44,7 +44,7 @@ You chose: **`r sd_output("penguins", type = "value")`**
 Summary of what everyone else has chosen:
 
 ```{r}
-plotOutput('penguin_plot')
+shiny::plotOutput('penguin_plot')
 ```
 
 :::
