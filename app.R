@@ -14,6 +14,12 @@ library(ggplot2)
 # https://surveydown.org/store-data
 
 db <- sd_database(
+    host   = "",
+    dbname = "",
+    port   = "",
+    user   = "",
+    table  = "",
+    ignore = TRUE
 )
 
 # Server setup
