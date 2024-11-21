@@ -1,5 +1,7 @@
-A demo of [reactive fetching](https://surveydown.org/fetch-data.html#reactive-fetching) in a surveydown survey.
+Encuesta básica destinada a alumnas y alumnos de cursos de Tiny, para iniciar las clases.
 
-This demo illustrates a reactive plot that shows the respondent their answer as well as a plot that updates in real time summarizing responses from all other users.
+Al terminar de responder la encuesta, los resultados pueden visualizarse en tiempo real. A medida que otras personas responden la encuesta, los resultados se van actualizando.
 
-For more information about the {surveydown} R package, see the [surveydown](https://surveydown.org) documentation website.
+Las respuestas quedan almacenadas en una base de datos remota de [Supabase.](https://supabase.com)
+
+_Esta encuesta fue hecha con [Shiny](https://shiny.posit.co), [Quarto](https://quarto.org/docs/computations/r.html), y el paquete de R [`{surveydown}`](https://surveydown.org)._

@@ -6,47 +6,233 @@ warning: false
 
 ```{r}
 library(surveydown)
+library(shiny)
 ```
 
-::: {#welcome .sd-page}
+::: {#bienvenida .sd-page}
 
-# Demo survey of reactive plot
+## Encuesta curso Shiny
+
+Responde esta breve encuesta y al finalizar podremos ver los resultados en tiempo real.
+
+_Esta encuesta fue hecha con [Shiny](https://shiny.posit.co), [Quarto](https://quarto.org/docs/computations/r.html), y el paquete de R [`{surveydown}`](https://surveydown.org)._
+
+```{r}
+sd_next(label = "Siguiente")
+```
+
+:::
+
+
+
+::: {#preguntas_basicas .sd-page}
+
+### Preguntas iniciales
 
 ::: {.callout-note}
 
-This is a demo survey showcasing the functionality of <a href="https://surveydown.org" target="_blank">surveydown</a>. It doesn't collect any data.
-
-The GitHub repo of this demo can be accessed <a href="https://github.com/surveydown-dev/demo-reactive-plot" target="_blank">here</a>.
+La información entregada será guardada de forma anónima, sin ningún dato que pueda identificarte.
 
 :::
 
-Here is a basic "multiple choice" question. The results will be displayed on the next page, showing both the choice you made as well as a summary of all the choices made by other participants.
 
 ```{r}
 sd_question(
-  type  = 'mc',
-  id    = 'penguins',
-  label = "Which type of penguin do you like the best?",
+  type  = 'mc_buttons',
+  id    = 'animo',
+  label = "¿Cómo estás?", 
   option = c(
-    'Adélie'    = 'adelie',
-    'Chinstrap' = 'chinstrap',
-    'Gentoo'    = 'gentoo'
+    "Muy mal",
+    "Mal",
+    "Más o menos",
+    "Bien",
+    "Muy bien"
+  ), selected = "Más o menos"
+)
+```
+
+```{r}
+sd_question(
+  type  = 'mc_multiple_buttons',
+  id    = 'animal',
+  label = "¿Cuál es tu animal favorito?",
+  option = c(
+    "Perro",
+    "Gato"
   )
 )
+```
 
-sd_next()
+```{r}
+sd_question(
+  type  = 'numeric',
+  id    = 'edad',
+  label = "¿Cuál es tu edad?"
+)
+```
+
+
+```{r}
+sd_question(
+  type  = 'mc_multiple_buttons',
+  id    = 'genero',
+  label = "¿Con qué género te identificas?",
+  option = c(
+    "Femenino",
+    "No binario/Otros",
+    "Masculino",
+    "Prefiero no responder"
+  )
+)
+```
+
+
+```{r}
+sd_next(label = "Siguiente")
 ```
 
 :::
 
-::: {#results .sd-page}
 
-You chose: **`r sd_output("penguins", type = "value")`**
 
-Summary of what everyone else has chosen:
+::: {#preguntas_reales .sd-page}
+
+## R
 
 ```{r}
-shiny::plotOutput('penguin_plot')
+sd_question(
+  type  = 'mc_multiple_buttons',
+  id    = 'uso_r',
+  label = "¿Has usado R antes?",
+  option = c(
+    "No",
+    "Sí"
+  )
+)
 ```
+
+```{r}
+sd_question(
+  type  = 'mc_multiple_buttons',
+  id    = 'nivel',
+  label = "¿Cómo calificarías tu nivel de R?",
+  option = c(
+    "Nulo",
+    "Principiante",
+    "Intermedio",
+    "Avanzado",
+    "Experto"
+  )
+)
+```
+
+
+## Shiny
+
+```{r}
+sd_question(
+  type  = 'mc_multiple_buttons',
+  id    = 'uso_shiny',
+  label = "¿Has usado Shiny antes?",
+  option = c(
+    "No",
+    "Sí"
+  )
+)
+```
+
+
+## Temas del curso
+Respuestas concisas, y separadas por comas.
+
+```{r}
+sd_question(
+  type  = "text",
+  id    = "temas",
+  label = "En pocas palabras, **¿hay algún tema en particular que quieras aprender?** Si son más de uno, sepáralos por comas",
+  placeholder = "(opcional)"
+)
+```
+
+```{r}
+sd_next(label = "Siguiente")
+```
+
+:::
+
+
+::: {#resultados .sd-page}
+
+Respuestas hasta el momento.
+
+_Los resultados se actualizan automáticamente cada 6 segundos._
+
+----
+
+## Preguntas iniciales
+### Estado de ánimo
+_¿Cómo te sientes?_
+```{r}
+plotOutput('animo')
+br()
+```
+
+### Animal favorito
+```{r}
+plotOutput('animal')
+br()
+```
+
+----
+
+### Edad
+```{r}
+plotOutput('edad')
+br()
+```
+
+
+### Género
+```{r}
+plotOutput('genero')
+br()
+```
+
+----
+
+## Uso previo de R
+```{r}
+plotOutput('uso_r')
+br()
+```
+
+
+## Nivel de R
+```{r}
+plotOutput('nivel')
+br()
+```
+
+## Uso previo de Shiny
+```{r}
+plotOutput('uso_shiny')
+br()
+```
+
+## Temáticas
+Temas que queremos aprender:
+```{r}
+uiOutput('temas')
+br()
+```
+
+----
+
+```{r}
+sd_close(label = "Terminar")
+br()
+```
+
+_Esta encuesta fue hecha con el paquete [`{surveydown}`](https://surveydown.org)_
 
 :::
