@@ -1,5 +1,7 @@
 Encuesta de prueba para demostrar el uso de {surveydown} para crear encuestas en R.
 
+Mira y responde la encuesta aquí: https://bastianoleah.shinyapps.io/encuesta_animales
+
 Al terminar de responder la encuesta, los resultados pueden visualizarse en tiempo real. A medida que otras personas responden la encuesta, los resultados se van actualizando.
 
 Puedes encontrar un tutorial para aprender a hacer una encuesta como ésta [en este enlace.](https://bastianolea.rbind.io/blog/surveydown_encuestas/)
