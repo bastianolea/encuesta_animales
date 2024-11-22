@@ -14,3 +14,6 @@ Meta
 rsconnect
 survey.html
 survey_files
+.Rdata
+.httr-oauth
+.quarto

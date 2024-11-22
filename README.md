@@ -1,6 +1,8 @@
-Encuesta básica destinada a alumnas y alumnos de cursos de Tiny, para iniciar las clases.
+Encuesta de prueba para demostrar el uso de {surveydown} para crear encuestas en R.
 
 Al terminar de responder la encuesta, los resultados pueden visualizarse en tiempo real. A medida que otras personas responden la encuesta, los resultados se van actualizando.
+
+Puedes encontrar un tutorial para aprender a hacer una encuesta como ésta [en este enlace.](https://bastianolea.rbind.io/blog/surveydown_encuestas/)
 
 Las respuestas quedan almacenadas en una base de datos remota de [Supabase.](https://supabase.com)
 
