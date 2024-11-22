@@ -79,7 +79,7 @@ sd_next(label = "Siguiente")
 
 ## Respuestas hasta el momento
 
-_Los resultados se actualizan automáticamente cada 10 segundos._
+**Total de respuestas:** `r textOutput("respuestas", inline = T)`. _Los resultados se actualizan automáticamente cada 10 segundos._
 
 ----
 
@@ -98,6 +98,20 @@ br()
 ### Género
 ```{r}
 plotOutput('genero')
+br()
+```
+
+
+### Animal según edad
+```{r}
+plotOutput('animal_edad', height = 300)
+br()
+```
+
+
+### Animal según género
+```{r}
+plotOutput('animal_genero', height = 300)
 br()
 ```
 
